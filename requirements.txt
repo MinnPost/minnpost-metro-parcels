@@ -1,0 +1,2 @@
+GDAL>=1.10.0
+progressbar>=2.2

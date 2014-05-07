@@ -31,16 +31,23 @@ Several metro counties are passing Open GIS Data policies, and only some have st
 
 Download the data with the following commands.  These will be linked and processed and are too big to commit to the repo:
 
+1. Ensure data directory is there: `mkdir -p data;`
 1. Hennepin: `cd data && wget http://data.dbspatial.com/hennepin/Hennepin_County_Tax_Property_Base.shp.zip && unzip Hennepin_County_Tax_Property_Base.shp.zip -d hennepin-shp; cd -;`
 1. MetroGIS: `cd data && wget ftp://gisftp.metc.state.mn.us/ParcelsCurrent.zip && unzip ParcelsCurrent.zip -d metrogis-shp; cd -;`
 
 ## Data processing
 
+### Reproject the data
+
+1. `mkdir -p data/reprojected_4326-shps;`
+1. `ogr2ogr -f "ESRI Shapefile" data/reprojected_4326-shps/anoka-parcels.shp data/metrogis-shp/ParcelsAnoka.shp -s_srs EPSG:26915 -t_srs EPSG:4326;`
+1. `ogr2ogr -f "ESRI Shapefile" data/reprojected_4326-shps/hennepin-parcels.shp data/hennepin-shp/Hennepin_County_Tax_Property_Base.shp -s_srs EPSG:26915 -t_srs EPSG:4326;`
+
 ### Process the data
 
 We need to combine the shapefiles and adjust some data.
 
-1. Run: ...
+1. Run: `python data-processing/process-shapefiles.py`
 
 ### Setup TileMill project
 
@@ -63,12 +70,15 @@ All commands are assumed to be on the [command line](http://en.wikipedia.org/wik
    * On a Mac, install [Homebrew](http://brew.sh/), then do: `brew install git`
 1. Install [NodeJS](http://nodejs.org/).
    * On a Mac, do: `brew install node`
-1. Optionally, for development, install [Grunt](http://gruntjs.com/): `npm install -g grunt-cli`
+1. Install [Grunt](http://gruntjs.com/): `npm install -g grunt-cli`
 1. Install [Bower](http://bower.io/): `npm install -g bower`
 1. Install [Sass](http://sass-lang.com/): `gem install sass`
    * On a Mac do: `sudo gem install sass`
-   1. Install [Compass](http://compass-style.org/): `gem install compass`
+1. Install [Compass](http://compass-style.org/): `gem install compass`
    * On a Mac do: `sudo gem install compass`
+1. Install [Python](https://www.python.org/download/).  This is probably already installed on your system.
+   * On a Mac, it is suggested to install with Homebrew and will probably require doing more than just installing: `brew install python`
+1. Install [pip](https://pypi.python.org/pypi/pip): `easy_install pip`
 
 
 ### Get code and install packages
@@ -80,6 +90,7 @@ Get the code for this project and install the necessary dependency libraries and
 1. Install NodeJS packages: `npm install`
 1. Install Bower components: `bower install`
 1. Because Mapbox comes unbuilt, we need to build it: `cd bower_components/mapbox.js/ && npm install && make; cd -;`
+1. Install Python packages: `pip install -r requirements.txt`
 
 ### Running locally
 
