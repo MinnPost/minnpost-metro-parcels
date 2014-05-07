@@ -36,13 +36,18 @@ Download the data with the following commands.  These will be linked and process
 
 ## Data processing
 
+### Process the data
+
+We need to combine the shapefiles and adjust some data.
+
+1. Run: ...
+
 ### Setup TileMill project
 
 1. Use variable for Mapbox path just in case yours is different: `export MAPBOX_PATH=~/Documents/MapBox/`
-1. Get the data and extract it: `cd data && wget http://data.dbspatial.com/hennepin/Hennepin_County_Tax_Property_Base.shp.zip && unzip Hennepin_County_Tax_Property_Base.shp.zip -d Hennepin_County_Tax_Property_Base; cd -;`
-1. Link data into Mapbox directory: `ln -s "$(pwd)/data/Hennepin_County_Tax_Property_Base" $MAPBOX_PATH/data/Hennepin_County_Tax_Property_Base`
-1. Link the Tilemill project into Mapbox directory: `ln -s "$(pwd)/data-processing/mapbox-hennepin-parcels" $MAPBOX_PATH/project/mapbox-hennepin-parcels`
-
+1. Link data into Mapbox directory: `ln -s "$(pwd)/data/hennepin-shp" $MAPBOX_PATH/data/hennepin-shp && ln -s "$(pwd)/data/metrogis-shp" $MAPBOX_PATH/data/metrogis-shp`
+1. Link the Tilemill project into Mapbox directory: `ln -s "$(pwd)/data-processing/map-metro-parcels" $MAPBOX_PATH/project/map-metro-parcels`
+1. Open up TileMill
 
 ### Exporting tiles
 
