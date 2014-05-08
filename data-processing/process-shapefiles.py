@@ -18,7 +18,7 @@ class MetroParcels():
 """
 
   script_path = os.path.dirname(os.path.realpath(__file__))
-  source_shape_hennepin = os.path.join(script_path, '../data/reprojected_4326-shps/hennepin-parcels-gdb.shp')
+  source_shape_hennepin = os.path.join(script_path, '../data/reprojected_4326-shps/hennepin-parcels.shp')
   source_shape_anoka = os.path.join(script_path, '../data/reprojected_4326-shps/anoka-parcels.shp')
   source_shape_dakota = os.path.join(script_path, '../data/reprojected_4326-shps/dakota-parcels.shp')
   source_shape_combined = os.path.join(script_path, '../data/combined-shp/metro-combined.shp')
@@ -114,26 +114,32 @@ class MetroParcels():
     self.anoka_count = self.anoka.GetFeatureCount()
 
 
-  def define_combined(self):
+  def define_combined(self, remove_old = True, create_fields = True):
     """
     Adds field definitions to shapes.  We know Anoka has the fields we want.
     http://www.datafinder.org/metadata/ParcelsCurrent.html#Entity_and_Attribute_Information
     """
     self.out('- Creating combined layer.\n')
 
-    # Create layer to write to, remove if already there
+    # Create layer to write to
     if not os.path.exists(os.path.dirname(self.source_shape_combined)):
       os.makedirs(os.path.dirname(self.source_shape_combined))
-    if os.path.exists(self.source_shape_combined):
+    if os.path.exists(self.source_shape_combined) and remove_old:
       self.out_driver.DeleteDataSource(self.source_shape_combined)
 
-    self.shape_combined = self.out_driver.CreateDataSource(self.source_shape_combined)
-    self.combined = self.shape_combined.CreateLayer('metro_parcels', geom_type = ogr.wkbPolygon)
+    # Open or create combined
+    if os.path.exists(self.source_shape_combined):
+      self.shape_combined = self.out_driver.Open(self.source_shape_combined, 1)
+      self.combined = self.shape_combined.GetLayer()
+    else:
+      self.shape_combined = self.out_driver.CreateDataSource(self.source_shape_combined)
+      self.combined = self.shape_combined.CreateLayer('metro_parcels', geom_type = ogr.wkbPolygon)
 
     # Create field definition from anoka
-    for i in range(0, self.anoka_definition.GetFieldCount()):
-      field = self.anoka_definition.GetFieldDefn(i)
-      self.combined.CreateField(field)
+    if create_fields:
+      for i in range(0, self.anoka_definition.GetFieldCount()):
+        field = self.anoka_definition.GetFieldDefn(i)
+        self.combined.CreateField(field)
 
     self.combined_definition = self.combined.GetLayerDefn()
 
@@ -387,16 +393,56 @@ class MetroParcels():
       ))
 
 
+  def output_field_values(self, field_name):
+    """
+    Outputs field values for a field.
+    """
+    found = {}
+    count = self.combined.GetFeatureCount()
+    widgets = ['- Finding values for %s: ' % (field_name), progressbar.Percentage(), ' ', progressbar.ETA()]
+    progress = progressbar.ProgressBar(widgets = widgets, maxval = count).start()
+    completed = 0
+
+    # Go through each feature
+    for feature in self.combined:
+      found[feature.GetField(field_name)] = found[feature.GetField(field_name)] + 1 if feature.GetField(field_name) in found else 1
+
+      # Update progress
+      completed = completed + 1
+      progress.update(completed)
+
+    # Stop progress bar
+    progress.finish()
+
+    # Output results
+    for i in found:
+      self.out('%s (%s)\n' % (i, found[i]))
+
+
   def process(self):
     """
     Main execution handler.
     """
     self.argparser = argparse.ArgumentParser(description = self.description, formatter_class = argparse.RawDescriptionHelpFormatter,)
 
-    # Option to output file definition
+    # Option to output field definition
     self.argparser.add_argument(
-      '-f', '--field-definition',
+      '--field-definition',
       help = 'Output field definition for reference for translating.',
+      default = None
+    )
+
+    # Option to output field values
+    self.argparser.add_argument(
+      '--field-values-first',
+      help = 'Output field values for a specific field; min and max if not string. Without combing.',
+      default = None
+    )
+
+    # Option to output field values
+    self.argparser.add_argument(
+      '--field-values-last',
+      help = 'Output field values for a specific field; min and max if not string.  After combining.',
       default = None
     )
 
@@ -406,6 +452,12 @@ class MetroParcels():
     # Output field defintion if so
     if self.args.field_definition not in [None, '', 0]:
       self.output_field_definitions(self.args.field_definition)
+      return
+
+    # Output field defintion if so
+    if self.args.field_values_first not in [None, '', 0]:
+      self.define_combined(False, False)
+      self.output_field_values(self.args.field_values_first)
       return
 
     # Figure out totals
@@ -421,6 +473,10 @@ class MetroParcels():
 
     # Spatial reference stuff
     self.make_spatial_reference()
+
+    # Output field defintion if so
+    if self.args.field_values_last not in [None, '', 0]:
+      self.output_field_values(self.args.field_values_last)
 
     # Close out thing
     self.close()

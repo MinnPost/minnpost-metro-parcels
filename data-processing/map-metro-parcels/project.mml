@@ -16,7 +16,9 @@
     "template_teaser": "{{{EMV_TOTAL}}} <br>\n{{{ACRES_POLY}}} <br>\n{{{ACRES_DEED}}} <br>",
     "template_full": "",
     "fields": [
-      "EMV_TOTAL"
+      "EMV_TOTAL",
+      "ACRES_POLY",
+      "ACRES_DEED"
     ]
   },
   "minzoom": 9,
