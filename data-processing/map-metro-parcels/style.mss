@@ -2,7 +2,6 @@ Map {
   background-color: transparent;
 }
 
-// Market value 0 - 6863000
 @none: #F1F1F1;
 
 @level1: #543005;
@@ -20,31 +19,13 @@ Map {
   polygon-opacity: 1;
   polygon-fill: @none;
   
-  [EMV_TOTAL > 0] {
-    polygon-fill: @level1;
-  }
-  [EMV_TOTAL > 100000] {
-    polygon-fill: @level2;
-  }
-  [EMV_TOTAL > 250000] {
-    polygon-fill: @level3;
-  }
-  [EMV_TOTAL > 500000] {
-    polygon-fill: @level4;
-  }
-  [EMV_TOTAL > 1000000] {
-    polygon-fill: @level5;
-  }
-  [EMV_TOTAL > 2000000] {
-    polygon-fill: @level6;
-  }
-  [EMV_TOTAL > 5000000] {
-    polygon-fill: @level7;
-  }
-  [EMV_TOTAL > 20000000] {
-    polygon-fill: @level8;
-  }
-  [EMV_TOTAL > 100000000] {
-    polygon-fill: @level9;
-  }
+  [EMV_TOTAL > 0]         { polygon-fill: @level1; }
+  [EMV_TOTAL > 100000]    { polygon-fill: @level2; }
+  [EMV_TOTAL > 250000]    { polygon-fill: @level3;}
+  [EMV_TOTAL > 500000]    { polygon-fill: @level4; }
+  [EMV_TOTAL > 1000000]   { polygon-fill: @level5; }
+  [EMV_TOTAL > 2000000]   { polygon-fill: @level6; }
+  [EMV_TOTAL > 5000000]   { polygon-fill: @level7; }
+  [EMV_TOTAL > 20000000]  { polygon-fill: @level8; }
+  [EMV_TOTAL > 100000000] { polygon-fill: @level9; }
 }

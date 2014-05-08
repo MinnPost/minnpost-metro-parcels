@@ -83,6 +83,29 @@ class MetroParcels():
       return None
 
 
+  def parse_float(self, s):
+    """
+    Parse float.
+    """
+    try:
+      return float(s) if s is not None else None
+    except ValueError:
+      return None
+
+
+  def parse_num(self, s):
+    """
+    Parse number.
+    """
+    try:
+      return int(s) if s is not None else None
+    except ValueError:
+      try:
+        return float(s) if s is not None else None
+      except ValueError:
+        return None
+
+
   def get_counts(self):
     """
     Get feature count.
@@ -225,15 +248,15 @@ class MetroParcels():
       'N' if old.GetField('HMSTD_CD1_') == 'NON-HOMESTEAD' else None
     ))
     # EMV_LAND (Real | 11 | 0)
-    new.SetField('EMV_LAND', old.GetField('EST_LAND_M'))
+    new.SetField('EMV_LAND', self.parse_float(old.GetField('EST_LAND_M')))
     # EMV_BLDG (Real | 11 | 0)
-    new.SetField('EMV_BLDG', old.GetField('EST_BLDG_M'))
+    new.SetField('EMV_BLDG', self.parse_float(old.GetField('EST_BLDG_M')))
     # EMV_TOTAL (Real | 11 | 0)
-    new.SetField('EMV_TOTAL', old.GetField('MKT_VAL_TO'))
+    new.SetField('EMV_TOTAL', self.parse_float(old.GetField('MKT_VAL_TO')))
     # TAX_CAPAC (Real | 11 | 0)
-    new.SetField('TAX_CAPAC', old.GetField('NET_TAX_CA'))
+    new.SetField('TAX_CAPAC', self.parse_float(old.GetField('NET_TAX_CA')))
     # TOTAL_TAX (Real | 11 | 0)
-    new.SetField('TOTAL_TAX', old.GetField('TAX_TOT'))
+    new.SetField('TOTAL_TAX', self.parse_float(old.GetField('TAX_TOT')))
     # SPEC_ASSES (Real | 11 | 0)
     # TAX_EXEMPT (String | 1 | 0)
     # XUSE1_DESC (String | 100 | 0)
@@ -255,9 +278,10 @@ class MetroParcels():
     # SALE_DATE (Date | 10 | 0)
     new.SetField('SALE_DATE', '%s-%s-01' %
       (old.GetField('SALE_DATE')[0:4], old.GetField('SALE_DATE')[4:6])
-      if old.GetField('SALE_DATE') is not None else None)
+      if old.GetField('SALE_DATE') is not None
+         and self.parse_num(old.GetField('SALE_DATE')) > 0 else None)
     # SALE_VALUE (Real | 11 | 0)
-    new.SetField('SALE_VALUE', old.GetField('SALE_PRICE'))
+    new.SetField('SALE_VALUE', self.parse_float(old.GetField('SALE_PRICE')))
     # SCHOOL_DST (String | 6 | 0)
     new.SetField('SCHOOL_DST', old.GetField('SCHOOL_DIS'))
     # WSHD_DIST (String | 50 | 0)
