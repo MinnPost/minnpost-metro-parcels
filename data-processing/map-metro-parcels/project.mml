@@ -13,12 +13,10 @@
   "format": "png8",
   "interactivity": {
     "layer": "parcels",
-    "template_teaser": "{{{EMV_TOTAL}}} <br>\n{{{ACRES_POLY}}} <br>\n{{{ACRES_DEED}}} <br>",
+    "template_teaser": "{{{COUNTY_ID}}} <br>\n{{{PIN}}} <br>\n{{{EMV_TOTAL}}} <br>\n{{{EMV_LAND}}} <br>\n{{{EMV_BLDG}}} <br>\n{{{ACRES_POLY}}} <br>\n{{{ACRES_DEED}}} <br>\n{{{USE1_DESC}}} <br>\n{{{HOMESTEAD}}}",
     "template_full": "",
     "fields": [
-      "EMV_TOTAL",
-      "ACRES_POLY",
-      "ACRES_DEED"
+      "EMV_TOTAL"
     ]
   },
   "minzoom": 9,
