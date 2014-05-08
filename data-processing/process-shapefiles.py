@@ -18,7 +18,7 @@ class MetroParcels():
 """
 
   script_path = os.path.dirname(os.path.realpath(__file__))
-  source_shape_hennepin = os.path.join(script_path, '../data/reprojected_4326-shps/hennepin-parcels.shp')
+  source_shape_hennepin = os.path.join(script_path, '../data/reprojected_4326-shps/hennepin-parcels-gdb.shp')
   source_shape_anoka = os.path.join(script_path, '../data/reprojected_4326-shps/anoka-parcels.shp')
   source_shape_dakota = os.path.join(script_path, '../data/reprojected_4326-shps/dakota-parcels.shp')
   source_shape_combined = os.path.join(script_path, '../data/combined-shp/metro-combined.shp')
@@ -252,7 +252,8 @@ class MetroParcels():
     # EMV_BLDG (Real | 11 | 0)
     new.SetField('EMV_BLDG', self.parse_float(old.GetField('EST_BLDG_M')))
     # EMV_TOTAL (Real | 11 | 0)
-    new.SetField('EMV_TOTAL', self.parse_float(old.GetField('MKT_VAL_TO')))
+    new.SetField('EMV_TOTAL', self.parse_float(old.GetField('MKT_VAL_TO'))
+      if old.GetField('MKT_VAL_TO') is not None else None)
     # TAX_CAPAC (Real | 11 | 0)
     new.SetField('TAX_CAPAC', self.parse_float(old.GetField('NET_TAX_CA')))
     # TOTAL_TAX (Real | 11 | 0)
@@ -413,7 +414,8 @@ class MetroParcels():
     # Set up shape to write to
     self.define_combined()
 
-    # Combine sources
+    # Combine sources.  For some reason if we do hennepin first, it hangs
+    # on anoka
     self.combine('anoka')
     self.combine('hennepin')
 

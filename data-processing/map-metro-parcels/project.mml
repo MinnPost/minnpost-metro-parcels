@@ -13,7 +13,7 @@
   "format": "png8",
   "interactivity": {
     "layer": "parcels",
-    "template_teaser": "{{{EMV_TOTAL}}}",
+    "template_teaser": "{{{EMV_TOTAL}}} <br>\n{{{ACRES_POLY}}} <br>\n{{{ACRES_DEED}}} <br>",
     "template_full": "",
     "fields": [
       "EMV_TOTAL"

@@ -9,6 +9,7 @@ dist/templates.js
 
 # Big data
 data/*shp*
+data/*gdb*
 data/*.zip
 data-processing/map-metro-parcels/layers
 

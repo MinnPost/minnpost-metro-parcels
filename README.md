@@ -32,16 +32,16 @@ Several metro counties are passing Open GIS Data policies, and only some have st
 Download the data with the following commands.  These will be linked and processed and are too big to commit to the repo:
 
 1. Ensure data directory is there: `mkdir -p data;`
-1. Hennepin: `cd data && wget http://data.dbspatial.com/hennepin/Hennepin_County_Tax_Property_Base.shp.zip && unzip Hennepin_County_Tax_Property_Base.shp.zip -d hennepin-shp; cd -;`
+1. Hennepin: `cd data && wget http://gis-stage.co.hennepin.mn.us/publicgisdata/hennepin_county_tax_property_base.zip && unzip hennepin_county_tax_property_base.zip -d hennepin-gdb; cd -;`
 1. MetroGIS: `cd data && wget ftp://gisftp.metc.state.mn.us/ParcelsCurrent.zip && unzip ParcelsCurrent.zip -d metrogis-shp; cd -;`
 
 ## Data processing
 
-### Reproject the data
+### Reproject and convert the data
 
 1. `mkdir -p data/reprojected_4326-shps;`
 1. `ogr2ogr -f "ESRI Shapefile" data/reprojected_4326-shps/anoka-parcels.shp data/metrogis-shp/ParcelsAnoka.shp -s_srs EPSG:26915 -t_srs EPSG:4326;`
-1. `ogr2ogr -f "ESRI Shapefile" data/reprojected_4326-shps/hennepin-parcels.shp data/hennepin-shp/Hennepin_County_Tax_Property_Base.shp -s_srs EPSG:26915 -t_srs EPSG:4326;`
+1. `ogr2ogr data/reprojected_4326-shps/hennepin-parcels.shp data/hennepin-gdb/Hennepin_County_Tax_Property_Base.gdb -t_srs EPSG:4326;`
 
 ### Process the data
 
@@ -79,7 +79,20 @@ All commands are assumed to be on the [command line](http://en.wikipedia.org/wik
 1. Install [Python](https://www.python.org/download/).  This is probably already installed on your system.
    * On a Mac, it is suggested to install with Homebrew and will probably require doing more than just installing: `brew install python`
 1. Install [pip](https://pypi.python.org/pypi/pip): `easy_install pip`
+1. Install GDAL (with FileGDB support)
 
+#### Install GDAL with FileGDB support
+
+The ESRI Geodatabase (FileGDB) format is proprietary and not yet well support in open source applications.  GDAL 1.11+ has limited support for it or we build GDAL with the specific libraries provided by ESRI.  These instructions are for Mac only
+
+1. Download file from ESRI, specifically the "File Geodatabase API 1.3 version for Mac 64-bit" version.  This requires making a free account on ESRI.
+    * http://www.esri.com/apps/products/download/index.cfm?fuseaction=#File_Geodatabase_API_1.3
+1. Copy the file to Homebrew cache: `cp FileGDB_API_1_3-64.zip $(brew --cache)/FileGDB_API_1_3-64.zip
+1. Install [custom OSGeo tap](https://github.com/OSGeo/homebrew-osgeo4mac) (ensure that old version of tap is removed): `brew untap dakcarto/osgeo4mac && brew tap osgeo/osgeo4mac && brew tap --repair;`
+1. `brew install osgeo/osgeo4mac/gdal-filegdb`
+1. `brew install osgeo/osgeo4mac/gdal --complete --enable-unsupported`
+1. Tell GDAL about the plugins: `export GDAL_DRIVER_PATH=$(brew --prefix)/lib/gdalplugins`
+    * This should go in your `.bash_profile` so that it is consistently available.
 
 ### Get code and install packages
 
