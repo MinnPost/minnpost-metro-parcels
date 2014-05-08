@@ -68,9 +68,11 @@ addthis_config = Drupal.settings.addthis.config_default; addthis_share = Drupal.
 
 
   <!-- Manually including Mapbox because it doesn't like Require -->
-  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+  <script src="//api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js"></script>
+  <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.2/Leaflet.fullscreen.min.js"></script>
   <style>
-    @import url("https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css");
+    @import url("//api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css");
+    @import url("//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.2/leaflet.fullscreen.css");
   </style>
 
   <!--

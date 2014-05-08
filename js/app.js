@@ -98,6 +98,9 @@ define('minnpost-metro-parcels', [
       // Remove attribution control
       this.map.removeControl(this.map.infoControl);
 
+      // Fullscreen
+      L.control.fullscreen().addTo(this.map);
+
       // For whatever reason, the map may not load complete, probably
       // due to the face that the DOM element for it is not
       // completely loaded
