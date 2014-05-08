@@ -13,19 +13,9 @@
   "format": "png8",
   "interactivity": {
     "layer": "parcels",
-    "template_teaser": "{{^MKT_VAL_TO}}\n<div class=“market-value”>No estimated market value found.</div>\n{{/MKT_VAL_TO}}\n{{#MKT_VAL_TO}}\n<div class=“market-value\\\">Total market value: {{{MKT_VAL_TO}}}</div>\n{{/MKT_VAL_TO}}\n\n{{#BUILD_YR}}\n<div class=“year-built\\\">Year built: {{{BUILD_YR}}}</div>\n{{/BUILD_YR}}\n\n{{#EST_LAND_M}}\n<div class=“land-value\\\">Land value: {{{EST_LAND_M}}}</div>\n{{/EST_LAND_M}}\n\n{{#EST_BLDG_M}}\n<div class=“bldg-value\\\">Building value: {{{EST_BLDG_M}}}</div>\n{{/EST_BLDG_M}}\n\n{{#PROPERTY_T}}\n<div class=“prop-type\\\">Type: {{{PROPERTY_T}}}</div>\n{{/PROPERTY_T}}\n\n{{#HMSTD_CD1_}}\n<div class=“home”>Homestead status: {{{HMSTD_CD1_}}}</div>\n{{/HMSTD_CD1_}}\n\n{{#STREET_NM}}\n<br>\n<div class=“street”>{{{STREET_NM}}}, {{{MUNIC_NM}}}, {{{ZIP_CD}}}</div>\n{{/STREET_NM}}",
+    "template_teaser": "",
     "template_full": "",
-    "fields": [
-      "MKT_VAL_TO",
-      "BUILD_YR",
-      "EST_LAND_M",
-      "EST_BLDG_M",
-      "PROPERTY_T",
-      "HMSTD_CD1_",
-      "STREET_NM",
-      "MUNIC_NM",
-      "ZIP_CD"
-    ]
+    "fields": []
   },
   "minzoom": 10,
   "maxzoom": 16,
@@ -46,9 +36,9 @@
       "class": "",
       "Datasource": {
         "type": "shape",
-        "file": "../../data/Hennepin_County_Tax_Property_Base/Hennepin_County_Tax_Property_Base.shp",
+        "file": "../../data/minnpost-combined-metro-shp/metro-combined.shp",
         "id": "parcels",
-        "project": "mapbox-hennepin-parcels",
+        "project": "map-metro-parcels",
         "srs": ""
       },
       "layer": null,
@@ -60,9 +50,9 @@
   ],
   "scale": 1,
   "metatile": 2,
-  "name": "Hennepin County Parcels",
+  "name": "Twin Cities Metro Parcels",
   "description": "",
   "legend": "",
-  "attribution": "Hennepin County GIS",
+  "attribution": "Hennepin County GIS, MetroGIS",
   "version": "0.0.1"
 }

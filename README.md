@@ -52,7 +52,7 @@ We need to combine the shapefiles and adjust some data.
 ### Setup TileMill project
 
 1. Use variable for Mapbox path just in case yours is different: `export MAPBOX_PATH=~/Documents/MapBox/`
-1. Link data into Mapbox directory: `ln -s "$(pwd)/data/hennepin-shp" $MAPBOX_PATH/data/hennepin-shp && ln -s "$(pwd)/data/metrogis-shp" $MAPBOX_PATH/data/metrogis-shp`
+1. Link data into Mapbox directory: `ln -s "$(pwd)/data/combined-shp" $MAPBOX_PATH/data/minnpost-combined-metro-shp`
 1. Link the Tilemill project into Mapbox directory: `ln -s "$(pwd)/data-processing/map-metro-parcels" $MAPBOX_PATH/project/map-metro-parcels`
 1. Open up TileMill
 

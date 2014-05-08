@@ -20,31 +20,31 @@ Map {
   polygon-opacity: 1;
   polygon-fill: @none;
   
-  [MKT_VAL_TO > 0] {
+  [EMV_TOTAL > 0] {
     polygon-fill: @level1;
   }
-  [MKT_VAL_TO > 100000] {
+  [EMV_TOTAL > 100000] {
     polygon-fill: @level2;
   }
-  [MKT_VAL_TO > 250000] {
+  [EMV_TOTAL > 250000] {
     polygon-fill: @level3;
   }
-  [MKT_VAL_TO > 500000] {
+  [EMV_TOTAL > 500000] {
     polygon-fill: @level4;
   }
-  [MKT_VAL_TO > 1000000] {
+  [EMV_TOTAL > 1000000] {
     polygon-fill: @level5;
   }
-  [MKT_VAL_TO > 2000000] {
+  [EMV_TOTAL > 2000000] {
     polygon-fill: @level6;
   }
-  [MKT_VAL_TO > 5000000] {
+  [EMV_TOTAL > 5000000] {
     polygon-fill: @level7;
   }
-  [MKT_VAL_TO > 20000000] {
+  [EMV_TOTAL > 20000000] {
     polygon-fill: @level8;
   }
-  [MKT_VAL_TO > 100000000] {
+  [EMV_TOTAL > 100000000] {
     polygon-fill: @level9;
   }
 }
