@@ -3,9 +3,9 @@
 
   <div class="content-container">
 
-    <div class="component-label">Hennepin County parcels</div>
+    <div class="component-label">Metro area residential parcels</div>
 
-    <div class="caption">The map below shows the estimated market value of most all the parcels in Hennepin County.  Hover over (or tap on a mobile device) to see some more information about the parcel.</div>
+    <div class="caption">The map below shows the estimated market value of residential parcels in Hennepin and Anoka counties.  This includes apartments, condominiums, and anything marked as a "homestead".  Hover over (or tap on a mobile device) to see some more information about the parcel.</div>
 
     <div class="legend caption">
       <ul>
