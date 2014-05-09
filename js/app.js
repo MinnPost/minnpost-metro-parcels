@@ -67,7 +67,7 @@ define('minnpost-metro-parcels', [
       var thisApp = this;
 
       // Make map
-      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,minnpost.dojn61or,minnpost.map-dotjndlk', {
+      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,minnpost.0ldkuik9,minnpost.map-dotjndlk', {
         scrollWheelZoom: false,
         trackResize: true
       });
