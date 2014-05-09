@@ -69,7 +69,9 @@ define('minnpost-metro-parcels', [
       // Make map
       this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,minnpost.0ldkuik9,minnpost.map-dotjndlk', {
         scrollWheelZoom: false,
-        trackResize: true
+        trackResize: true,
+        minZoom: 9,
+        maxZoom: 16
       });
 
       // Override the template function in Mapbox's grid control because

@@ -22,6 +22,8 @@
 
   <div class="footnote-container">
     <div class="footnote">
+      <p>Showing estimated total market value; not showing value per acre or square foot because there is not enough information about buildings which is included in the estimated total market value.</p>
+
       <p>Some code, techniques, and data on <a href="https://github.com/minnpost/minnpost-metro-parcels" target="_blank">Github</a>.  Some map data © OpenStreetMap contributors; licensed under the <a href="http://www.openstreetmap.org/copyright" target="_blank">Open Data Commons Open Database License</a>.  Some map design © MapBox; licensed according to the <a href="http://mapbox.com/tos/" target="_blank">MapBox Terms of Service</a>.</p>
 
     </div>

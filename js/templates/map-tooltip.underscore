@@ -1,11 +1,11 @@
 
-<% if (!data.EMV_TOTAL) { %>
-  <div>There is no estimated market value on this parcel.</div>
-<% } else { %>
-  <div>
+<div>
+  <% if (!data.EMV_TOTAL) { %>
+    There is no estimated market value on this parcel.
+  <% } else { %>
     Estimated market value is <strong><%= '$' + format.number(data.EMV_TOTAL, 0) %></strong>
     <% if (data.ACRES_POLY > 0) { %>
-      which is about <%= '$' + format.number(data.EMV_TOTAL / data.ACRES_POLY, 2) %> per acre
+      which is about <%= '$' + format.number(data.EMV_TOTAL / data.ACRES_POLY, 0) %> per acre
     <% } %>.
 
     <% if (data.EMV_LAND || data.EMV_BLDG) { %>
@@ -17,9 +17,9 @@
     <% if (data.YR_BUILT) { %>
       Approximately built in <strong><%= data.YR_BUILT %></strong>.
     <% } %>
+  <% } %>
 
-    <% if (data.USE1_DESC || data.HOMESTEAD) { %>
-      This parcel is classified as <em><%= data.USE1_DESC.toLowerCase() %></em>, <em><%= (data.HOMESTEAD === 'Y') ? 'homestead' : 'not homestead' %></em>.
-    <% } %>
-  </div>
-<% } %>
+  <% if (data.USE1_DESC || data.HOMESTEAD) { %>
+    This parcel is classified as <em><%= data.USE1_DESC.toLowerCase() %></em>, <em><%= (data.HOMESTEAD === 'Y') ? 'homestead' : 'non-homestead' %></em>.
+  <% } %>
+</div>
