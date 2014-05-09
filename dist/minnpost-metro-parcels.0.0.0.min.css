@@ -1,0 +1,6 @@
+/*! minnpost-metro-parcels - v0.0.0 - 2014-05-09
+* https://github.com/minnpost/minnpost-metro-parcels
+* Copyright (c) 2014 MinnPost; Licensed MIT */
+
+
+body .node-unpublished{background-repeat:no-repeat}.mp .browser-upgrade-note{background-color:#F1F1F1;padding:2em 3em}.mp .minnpost-metro-parcels-container .application-container{padding-top:1.5em;margin-bottom:1.5em}.mp .minnpost-metro-parcels-container #parcels-map{height:44em}.mp .minnpost-metro-parcels-container .legend{text-align:center;padding-top:1em;margin-bottom:2em}.mp .minnpost-metro-parcels-container .legend ul{list-style:none;margin:0;padding:0}.mp .minnpost-metro-parcels-container .legend ul li{width:9%;margin:0 .25% 1em 0;font-size:.85em;vertical-align:top}.mp .minnpost-metro-parcels-container .legend ul li span{display:block;height:1.25em;margin-bottom:.25em;border-radius:.1em}@media screen and (max-width:550px){.mp .minnpost-metro-parcels-container .legend ul li{font-size:.75em;width:17%}.mp .minnpost-metro-parcels-container #parcels-map{height:30em}}
