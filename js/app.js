@@ -50,7 +50,7 @@ define('minnpost-metro-parcels', [
 
       // Get tilejson data
       $.ajax({
-        url: this.options.tilestream_base + this.options.tilestream_map + '.json?callback=?',
+        url: this.options.mapbox_base.replace('{s}', 'a') + this.options.mapbox_map + '.json?callback=?',
         dataType: 'jsonp',
         jsonpCallback: 'mpCacheBuster',
         cache: true,
@@ -67,7 +67,7 @@ define('minnpost-metro-parcels', [
       var thisApp = this;
 
       // Make map
-      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,minnpost.0ldkuik9,minnpost.map-dotjndlk', {
+      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,' + this.options.mapbox_map + ',minnpost.map-dotjndlk', {
         scrollWheelZoom: false,
         trackResize: true,
         minZoom: 9,
@@ -151,6 +151,7 @@ define('minnpost-metro-parcels', [
       tilestream_base: '//ec2-54-82-59-19.compute-1.amazonaws.com:9003/v2/',
       tilestream_map: 'hennepin-parcels',
       mapbox_base: '//{s}.tiles.mapbox.com/v3/',
+      mapbox_map: 'minnpost.0ldkuik9',
       availablePaths: {
         local: {
           css: ['.tmp/css/main.css'],
