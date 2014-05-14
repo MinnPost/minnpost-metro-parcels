@@ -14690,10 +14690,10 @@ define('text',['module'], function (module) {
 });
 
 
-define('text!templates/application.underscore',[],function () { return '<div class="application-container">\n  <div class="message-container"></div>\n\n  <div class="content-container">\n\n    <div class="component-label">Metro area residential parcels</div>\n\n    <div class="caption">The map below shows the estimated market value of residential parcels in Hennepin and Anoka counties.  This includes apartments, condominiums, and anything marked as a "homestead".  Hover over (or tap on a mobile device) to see some more information about the parcel.</div>\n\n    <div class="legend caption">\n      <ul>\n        <% _.each(legend, function(l, li) { %>\n          <li class="inline-block"><span class="inline-block" style="background-color: <%= li %>"></span> <%= l %></li>\n        <% }) %>\n      </ul>\n    </div>\n\n    <div class="map" id="parcels-map">\n    </div>\n\n  </div>\n\n  <div class="footnote-container">\n    <div class="footnote">\n      <p>Some code, techniques, and data on <a href="https://github.com/minnpost/minnpost-metro-parcels" target="_blank">Github</a>.  Some map data © OpenStreetMap contributors; licensed under the <a href="http://www.openstreetmap.org/copyright" target="_blank">Open Data Commons Open Database License</a>.  Some map design © MapBox; licensed according to the <a href="http://mapbox.com/tos/" target="_blank">MapBox Terms of Service</a>.</p>\n\n    </div>\n  </div>\n</div>\n';});
+define('text!templates/application.underscore',[],function () { return '<div class="application-container">\n  <div class="message-container"></div>\n\n  <div class="content-container">\n\n    <div class="component-label">Metro area residential parcels</div>\n\n    <div class="caption">The map below shows the estimated market value of residential parcels in Hennepin and Anoka counties.  This includes apartments, condominiums, and anything marked as a "homestead".  Hover over (or tap on a mobile device) to see some more information about the parcel.</div>\n\n    <div class="legend caption">\n      <ul>\n        <% _.each(legend, function(l, li) { %>\n          <li class="inline-block"><span class="inline-block" style="background-color: <%= li %>"></span> <%= l %></li>\n        <% }) %>\n      </ul>\n    </div>\n\n    <div class="map" id="parcels-map">\n    </div>\n\n  </div>\n\n  <div class="footnote-container">\n    <div class="footnote">\n      <p>Showing estimated total market value; not showing value per acre or square foot because there is not enough information about buildings which is included in the estimated total market value.</p>\n\n      <p>Some code, techniques, and data on <a href="https://github.com/minnpost/minnpost-metro-parcels" target="_blank">Github</a>.  Some map data © OpenStreetMap contributors; licensed under the <a href="http://www.openstreetmap.org/copyright" target="_blank">Open Data Commons Open Database License</a>.  Some map design © MapBox; licensed according to the <a href="http://mapbox.com/tos/" target="_blank">MapBox Terms of Service</a>.</p>\n\n    </div>\n  </div>\n</div>\n';});
 
 
-define('text!templates/map-tooltip.underscore',[],function () { return '\n<% if (!data.EMV_TOTAL) { %>\n  <div>There is no estimated market value on this parcel.</div>\n<% } else { %>\n  <div>\n    Estimated market value is <strong><%= \'$\' + format.number(data.EMV_TOTAL, 0) %></strong>\n    <% if (data.ACRES_POLY > 0) { %>\n      which is about <%= \'$\' + format.number(data.EMV_TOTAL / data.ACRES_POLY, 2) %> per acre\n    <% } %>.\n\n    <% if (data.EMV_LAND || data.EMV_BLDG) { %>\n      The total value is made up of about\n      <%= format.number(data.EMV_LAND / data.EMV_TOTAL * 100, 1) + \'%\' %> land value\n      and <%= format.number(data.EMV_BLDG / data.EMV_TOTAL * 100 , 1) + \'%\' %> building value.\n    <% } %>\n\n    <% if (data.YR_BUILT) { %>\n      Approximately built in <strong><%= data.YR_BUILT %></strong>.\n    <% } %>\n\n    <% if (data.USE1_DESC || data.HOMESTEAD) { %>\n      This parcel is classified as <em><%= data.USE1_DESC.toLowerCase() %></em>, <em><%= (data.HOMESTEAD === \'Y\') ? \'homestead\' : \'not homestead\' %></em>.\n    <% } %>\n  </div>\n<% } %>\n';});
+define('text!templates/map-tooltip.underscore',[],function () { return '\n<div>\n  <% if (!data.EMV_TOTAL) { %>\n    There is no estimated market value on this parcel.\n  <% } else { %>\n    Estimated market value is <strong><%= \'$\' + format.number(data.EMV_TOTAL, 0) %></strong>\n    <% if (data.ACRES_POLY > 0) { %>\n      which is about <%= \'$\' + format.number(data.EMV_TOTAL / data.ACRES_POLY, 0) %> per acre\n    <% } %>.\n\n    <% if (data.EMV_LAND || data.EMV_BLDG) { %>\n      The total value is made up of about\n      <%= format.number(data.EMV_LAND / data.EMV_TOTAL * 100, 1) + \'%\' %> land value\n      and <%= format.number(data.EMV_BLDG / data.EMV_TOTAL * 100 , 1) + \'%\' %> building value.\n    <% } %>\n\n    <% if (data.YR_BUILT) { %>\n      Approximately built in <strong><%= data.YR_BUILT %></strong>.\n    <% } %>\n  <% } %>\n\n  <% if (data.USE1_DESC || data.HOMESTEAD) { %>\n    This parcel is classified as <em><%= data.USE1_DESC.toLowerCase() %></em>, <em><%= (data.HOMESTEAD === \'Y\') ? \'homestead\' : \'non-homestead\' %></em>.\n  <% } %>\n</div>\n';});
 
 /**
  * Main application file for: minnpost-metro-parcels
@@ -14747,7 +14747,7 @@ define('minnpost-metro-parcels', [
 
       // Get tilejson data
       $.ajax({
-        url: this.options.tilestream_base + this.options.tilestream_map + '.json?callback=?',
+        url: this.options.mapbox_base.replace('{s}', 'a') + this.options.mapbox_map + '.json?callback=?',
         dataType: 'jsonp',
         jsonpCallback: 'mpCacheBuster',
         cache: true,
@@ -14764,9 +14764,11 @@ define('minnpost-metro-parcels', [
       var thisApp = this;
 
       // Make map
-      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,minnpost.0ldkuik9,minnpost.map-dotjndlk', {
+      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,' + this.options.mapbox_map + ',minnpost.map-dotjndlk', {
         scrollWheelZoom: false,
-        trackResize: true
+        trackResize: true,
+        minZoom: 9,
+        maxZoom: 16
       });
 
       // Override the template function in Mapbox's grid control because
@@ -14846,6 +14848,7 @@ define('minnpost-metro-parcels', [
       tilestream_base: '//ec2-54-82-59-19.compute-1.amazonaws.com:9003/v2/',
       tilestream_map: 'hennepin-parcels',
       mapbox_base: '//{s}.tiles.mapbox.com/v3/',
+      mapbox_map: 'minnpost.0ldkuik9',
       availablePaths: {
         local: {
           css: ['.tmp/css/main.css'],
