@@ -19,7 +19,7 @@ Several metro counties are passing Open GIS Data policies, and only some have st
 * Dakota
     * In the MetroGIS Datafinder but the polygon data does not have any valid attributes, though the point data does.
 * Ramsey
-    * Passed policy but no data downloads.
+    * [Ramsey County GIS](http://www.co.ramsey.mn.us/is/gisdata.htm) provides a large archive of all their GIS data sets.
 * Carver
     * Passed policy but no data downloads.
 * Washington
@@ -34,6 +34,7 @@ Download the data with the following commands.  These will be linked and process
 1. Ensure data directory is there: `mkdir -p data;`
 1. Hennepin: `cd data && wget http://gis-stage.co.hennepin.mn.us/publicgisdata/hennepin_county_tax_property_base.zip && unzip hennepin_county_tax_property_base.zip -d hennepin-gdb; cd -;`
 1. MetroGIS: `cd data && wget ftp://gisftp.metc.state.mn.us/ParcelsCurrent.zip && unzip ParcelsCurrent.zip -d metrogis-shp; cd -;`
+1. Ramsey: `cd data && wget ftp://ftp.co.ramsey.mn.us/gisdata/publicdata.zip && unzip publicdata.zip -d ramsey-shp-gdb; cd -;
 
 ## Data processing
 
@@ -42,6 +43,7 @@ Download the data with the following commands.  These will be linked and process
 1. `mkdir -p data/reprojected_4326-shps;`
 1. `ogr2ogr -f "ESRI Shapefile" data/reprojected_4326-shps/anoka-parcels.shp data/metrogis-shp/ParcelsAnoka.shp -s_srs EPSG:26915 -t_srs EPSG:4326;`
 1. `ogr2ogr data/reprojected_4326-shps/hennepin-parcels.shp data/hennepin-gdb/Hennepin_County_Tax_Property_Base.gdb -t_srs EPSG:4326;`
+1. `ogr2ogr data/reprojected_4326-shps/ramsey-parcels.shp data/ramsey-shp-gdb/Shapefiles/CDSTL_AttributedParcelPoly.shp -t_srs EPSG:4326;`
 
 ### Process the data
 

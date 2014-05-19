@@ -19,6 +19,7 @@ class MetroParcels():
 
   script_path = os.path.dirname(os.path.realpath(__file__))
   source_shape_hennepin = os.path.join(script_path, '../data/reprojected_4326-shps/hennepin-parcels.shp')
+  source_shape_ramsey = os.path.join(script_path, '../data/reprojected_4326-shps/ramsey-parcels.shp')
   source_shape_anoka = os.path.join(script_path, '../data/reprojected_4326-shps/anoka-parcels.shp')
   source_shape_dakota = os.path.join(script_path, '../data/reprojected_4326-shps/dakota-parcels.shp')
   source_shape_combined = os.path.join(script_path, '../data/combined-shp/metro-combined.shp')
@@ -34,17 +35,20 @@ class MetroParcels():
     # Read files
     self.shape_hennepin = self.in_driver.Open(self.source_shape_hennepin, 0)
     self.shape_anoka = self.in_driver.Open(self.source_shape_anoka, 0)
-    if self.shape_hennepin is None or self.shape_anoka is None:
+    self.shape_ramsey = self.in_driver.Open(self.source_shape_ramsey, 0)
+    if self.shape_hennepin is None or self.shape_anoka is None or self.shape_ramsey is None:
       self.error('Could not find a necessary shapefile')
       sys.exit(1)
 
     # Get actual layers
     self.hennepin = self.shape_hennepin.GetLayer()
     self.anoka = self.shape_anoka.GetLayer()
+    self.ramsey = self.shape_ramsey.GetLayer()
 
-    # Get layer definitions
+    # Get layer definitions (no need to do this more than once)
     self.hennepin_definition = self.hennepin.GetLayerDefn()
     self.anoka_definition = self.anoka.GetLayerDefn()
+    self.ramsey_definition = self.ramsey.GetLayerDefn()
 
     # Start pocessing
     self.process()
@@ -56,6 +60,7 @@ class MetroParcels():
     """
     self.shape_hennepin.Destroy()
     self.shape_anoka.Destroy()
+    self.shape_ramsey.Destroy()
     self.shape_combined.Destroy()
 
 
@@ -112,6 +117,7 @@ class MetroParcels():
     """
     self.hennepin_count = self.hennepin.GetFeatureCount()
     self.anoka_count = self.anoka.GetFeatureCount()
+    self.ramsey_count = self.ramsey.GetFeatureCount()
 
 
   def define_combined(self, remove_old = True, create_fields = True):
@@ -140,6 +146,8 @@ class MetroParcels():
       for i in range(0, self.anoka_definition.GetFieldCount()):
         field = self.anoka_definition.GetFieldDefn(i)
         self.combined.CreateField(field)
+
+    # Create other fields here
 
     self.combined_definition = self.combined.GetLayerDefn()
 
@@ -304,6 +312,233 @@ class MetroParcels():
     return new
 
 
+  def ramsey_translation(self, old, new):
+    """
+    Translation layer for each feature for Ramsey.  We have to basically
+    manually translate.
+
+    See: data/ramsey-shp-gdb/Metadata/CDSTL_AttributedParcelPoly.html
+    """
+
+    """
+    Ramsey fields (not used)
+    FIPsPID (String | 17 | 0)
+    RollType (String | 1 | 0)
+    BldgSuf (String | 3 | 0)
+    StrSufType (String | 4 | 0)
+    StrSufDir (String | 2 | 0)
+    StrNameAll (String | 40 | 0)
+    SiteAdd (String | 70 | 0)
+    SiteZIP (String | 12 | 0)
+    SiteCSZ (String | 60 | 0)
+    PrimLast (String | 65 | 0)
+    PrimName (String | 65 | 0)
+    PrimName1 (String | 65 | 0)
+    PrimName2 (String | 65 | 0)
+    PrimAdd1 (String | 30 | 0)
+    PrimAdd2 (String | 30 | 0)
+    PrimAdd (String | 60 | 0)
+    PrimCity (String | 20 | 0)
+    PrimState (String | 2 | 0)
+    PrimZIP5 (String | 5 | 0)
+    PrimZIP4 (String | 4 | 0)
+    PrimCntry (String | 20 | 0)
+    PrimCSZ (String | 60 | 0)
+    AltName1 (String | 65 | 0)
+    AltName2 (String | 65 | 0)
+    AltAdd1 (String | 30 | 0)
+    AltAdd2 (String | 30 | 0)
+    AltAdd (String | 60 | 0)
+    AltCity (String | 20 | 0)
+    AltState (String | 2 | 0)
+    AltZIP5 (String | 5 | 0)
+    AltZIP4 (String | 4 | 0)
+    AltCntry (String | 20 | 0)
+    AltCSZ (String | 40 | 0)
+    HmstdName1 (String | 65 | 0)
+    HmstdName2 (String | 65 | 0)
+    HmstdAdd1 (String | 30 | 0)
+    HmstdAdd2 (String | 30 | 0)
+    HmstdAdd (String | 60 | 0)
+    HmstdCity (String | 20 | 0)
+    HmstdState (String | 2 | 0)
+    HmstdZIP5 (String | 5 | 0)
+    HmstdZIP4 (String | 4 | 0)
+    HmstdCSZ (String | 60 | 0)
+    TIFDist (String | 10 | 0)
+    SchDist (String | 50 | 0)
+    WshdIDTax (String | 3 | 0)
+    WshdPoly (String | 60 | 0)
+    PlatID (String | 20 | 0)
+    TaxDesc (String | 254 | 0)
+    PlatDate (Date | 10 | 0)
+    Abstract (String | 14 | 0)
+    Torrens (String | 14 | 0)
+    SqFt (Real | 19 | 11)
+    Frontage (Real | 19 | 11)
+    LoanCo (String | 10 | 0)
+    LoanCoName (String | 30 | 0)
+    TaxYear (Integer | 4 | 0)
+    EMVYear (Integer | 4 | 0)
+    TaxYear1 (Integer | 4 | 0)
+    EMVYear1 (Integer | 4 | 0)
+    EMVLand1 (Real | 19 | 11)
+    EMVBldg1 (Real | 19 | 11)
+    EMVTotal1 (Real | 19 | 11)
+    TotalTax1 (Real | 19 | 11)
+    SpAssess1 (Real | 19 | 11)
+    TaxYear2 (Integer | 4 | 0)
+    EMVYear2 (Integer | 4 | 0)
+    EMVLand2 (Real | 19 | 11)
+    EMVBldg2 (Real | 19 | 11)
+    EMVTotal2 (Real | 19 | 11)
+    TotalTax2 (Real | 19 | 11)
+    SpAssess2 (Real | 19 | 11)
+    LUC (String | 43 | 0)
+    HmstdDesc (String | 45 | 0)
+    Structure (String | 32 | 0)
+    ExtWall (String | 16 | 0)
+    Stories (Integer | 4 | 0)
+    RoomTotal (Integer | 4 | 0)
+    BedRoom (Integer | 4 | 0)
+    FamilyRoom (Integer | 4 | 0)
+    Topology (String | 12 | 0)
+    Utility (String | 16 | 0)
+    X (Real | 19 | 11)
+    Y (Real | 19 | 11)
+    Latitude (Real | 19 | 11)
+    Longitude (Real | 19 | 11)
+    ParcelCode (Integer | 4 | 0)
+    JoinDate (Date | 10 | 0)
+    """
+
+    # If there is not a conversion below the field, it means there is not
+    # an eqivalent in Ramsey
+
+    # COUNTY_ID (String | 3 | 0)
+    new.SetField('COUNTY_ID', old.GetField('CountyID'))
+    # PIN (String | 17 | 0)
+    new.SetField('PIN', old.GetField('ParcelID'))
+    # BLDG_NUM (String | 10 | 0)
+    new.SetField('BLDG_NUM', old.GetField('BldgNum'))
+    # PREFIX_DIR (String | 2 | 0)
+    new.SetField('PREFIX_DIR', old.GetField('StrPreDir'))
+    # PREFIXTYPE (String | 6 | 0)
+    new.SetField('PREFIXTYPE', old.GetField('StrPreType'))
+    # STREETNAME (String | 40 | 0)
+    new.SetField('STREETNAME', old.GetField('StreetName'))
+    # STREETTYPE (String | 4 | 0)
+    # SUFFIX_DIR (String | 2 | 0)
+    new.SetField('SUFFIX_DIR', old.GetField('StrSufDir'))
+    # UNIT_INFO (String | 12 | 0)
+    new.SetField('UNIT_INFO', old.GetField('Unit'))
+    # CITY (String | 30 | 0)
+    new.SetField('CITY', old.GetField('SiteCity'))
+    # CITY_USPS (String | 30 | 0)
+    new.SetField('CITY_USPS', old.GetField('SiteCityPS'))
+    # ZIP (String | 5 | 0)
+    new.SetField('ZIP', old.GetField('SiteZIP5'))
+    # ZIP4 (String | 4 | 0)
+    new.SetField('ZIP4', old.GetField('SiteZIP4'))
+    # PLAT_NAME (String | 50 | 0)
+    new.SetField('PLAT_NAME', old.GetField('PlatName'))
+    # BLOCK (String | 5 | 0)
+    new.SetField('BLOCK', old.GetField('Block'))
+    # LOT (String | 5 | 0)
+    new.SetField('LOT', old.GetField('Lot'))
+    # ACRES_POLY (Real | 11 | 2)
+    new.SetField('ACRES_POLY', old.GetField('AcresPoly'))
+    # ACRES_DEED (Real | 11 | 2)
+    new.SetField('ACRES_DEED', old.GetField('AcresDeed'))
+    # USE1_DESC (String | 100 | 0)
+    new.SetField('USE1_DESC', old.GetField('UseType1'))
+    # USE2_DESC (String | 100 | 0)
+    new.SetField('USE2_DESC', old.GetField('UseType2'))
+    # USE3_DESC (String | 100 | 0)
+    new.SetField('USE3_DESC', old.GetField('UseType3'))
+    # USE4_DESC (String | 100 | 0)
+    new.SetField('USE4_DESC', old.GetField('UseType4'))
+    # MULTI_USES (String | 1 | 0)
+    new.SetField('MULTI_USES', old.GetField('MultiUseYN'))
+    # LANDMARK (String | 100 | 0)
+    new.SetField('LANDMARK', old.GetField('Landmark'))
+    # OWNER_NAME (String | 50 | 0)
+    # OWNER_MORE (String | 50 | 0)
+    # OWN_ADD_L1 (String | 40 | 0)
+    # OWN_ADD_L2 (String | 40 | 0)
+    # OWN_ADD_L3 (String | 40 | 0)
+    # TAX_NAME (String | 40 | 0)
+    # TAX_ADD_L1 (String | 40 | 0)
+    # TAX_ADD_L2 (String | 40 | 0)
+    # TAX_ADD_L3 (String | 40 | 0)
+    # HOMESTEAD (String | 1 | 0)
+    new.SetField('HOMESTEAD', old.GetField('HmstdYN'))
+    # EMV_LAND (Real | 11 | 0)
+    new.SetField('EMV_LAND', old.GetField('EMVLand'))
+    # EMV_BLDG (Real | 11 | 0)
+    new.SetField('EMV_BLDG', old.GetField('EMVBldg'))
+    # EMV_TOTAL (Real | 11 | 0)
+    new.SetField('EMV_TOTAL', old.GetField('EMVTotal'))
+    # TAX_CAPAC (Real | 11 | 0)
+    new.SetField('TAX_CAPAC', old.GetField('TaxCap'))
+    # TOTAL_TAX (Real | 11 | 0)
+    new.SetField('TOTAL_TAX', old.GetField('TotalTax'))
+    # SPEC_ASSES (Real | 11 | 0)
+    new.SetField('SPEC_ASSES', old.GetField('SpAssess'))
+    # TAX_EXEMPT (String | 1 | 0)
+    new.SetField('TAX_EXEMPT', old.GetField('TaxExYN'))
+    # XUSE1_DESC (String | 100 | 0)
+    new.SetField('XUSE1_DESC', old.GetField('ExemptUse1'))
+    # XUSE2_DESC (String | 100 | 0)
+    new.SetField('XUSE2_DESC', old.GetField('ExemptUse2'))
+    # XUSE3_DESC (String | 100 | 0)
+    new.SetField('XUSE3_DESC', old.GetField('ExemptUse3'))
+    # XUSE4_DESC (String | 100 | 0)
+    new.SetField('XUSE4_DESC', old.GetField('ExemptUse4'))
+    # DWELL_TYPE (String | 30 | 0)
+    new.SetField('DWELL_TYPE', old.GetField('DwellType'))
+    # HOME_STYLE (String | 30 | 0)
+    new.SetField('HOME_STYLE', old.GetField('HomeStyle'))
+    # FIN_SQ_FT (Real | 11 | 0)
+    new.SetField('FIN_SQ_FT', old.GetField('LivingSqFt'))
+    # GARAGE (String | 1 | 0)
+    new.SetField('GARAGE', old.GetField('GarageYN'))
+    # GARAGESQFT (String | 11 | 0)
+    new.SetField('GARAGESQFT', old.GetField('GarageSqFt'))
+    # BASEMENT (String | 1 | 0)
+    new.SetField('BASEMENT', old.GetField('BasementYN'))
+    # HEATING (String | 30 | 0)
+    new.SetField('HEATING', old.GetField('HeatType'))
+    # COOLING (String | 30 | 0)
+    new.SetField('COOLING', old.GetField('CoolType'))
+    # YEAR_BUILT (Integer | 4 | 0)
+    new.SetField('YEAR_BUILT', old.GetField('YearBuilt'))
+    # NUM_UNITS (String | 6 | 0)
+    new.SetField('NUM_UNITS', old.GetField('LivingUnit'))
+    # SALE_DATE (Date | 10 | 0)
+    new.SetField('SALE_DATE', old.GetField('LastSale'))
+    # SALE_VALUE (Real | 11 | 0)
+    new.SetField('SALE_VALUE', old.GetField('SalePrice'))
+    # SCHOOL_DST (String | 6 | 0)
+    new.SetField('SCHOOL_DST', old.GetField('SchDistNum'))
+    # WSHD_DIST (String | 50 | 0)
+    new.SetField('WSHD_DIST', old.GetField('WshdTax'))
+    # GREEN_ACRE (String | 1 | 0)
+    new.SetField('GREEN_ACRE', old.GetField('GrnAcresYN'))
+    # OPEN_SPACE (String | 1 | 0)
+    new.SetField('OPEN_SPACE', old.GetField('OpenSpcYN'))
+    # AG_PRESERV (String | 1 | 0)
+    new.SetField('AG_PRESERV', old.GetField('AgPYN'))
+    # AGPRE_ENRD (Date | 10 | 0)
+    new.SetField('AGPRE_ENRD', old.GetField('AgPEnroll'))
+    # AGPRE_EXPD (Date | 10 | 0)
+    new.SetField('AGPRE_EXPD', old.GetField('AgPExpire'))
+    # PARC_CODE (Integer | 2 | 0)
+
+    #print new.ExportToJson()
+    return new
+
+
 
   def anoka_translation(self, old, new):
     """
@@ -393,6 +628,24 @@ class MetroParcels():
       ))
 
 
+  def output_field_source(self, layer_name, field_name, limit):
+    """
+    Outputs field values for source field.
+    """
+    self.out('- Outputting values for field %s in %s:\n' % (field_name, layer_name))
+    layer = getattr(self, layer_name)
+    layer_definition = getattr(self, '%s_definition' % (layer_name))
+    count = 0
+
+    for feature in layer:
+      if count < limit:
+        self.out('%s\n' % (feature.GetField(field_name)))
+      else:
+        break
+
+      count = count + 1
+
+
   def output_field_values(self, field_name):
     """
     Outputs field values for a field.
@@ -432,17 +685,24 @@ class MetroParcels():
       default = None
     )
 
+    # Option to output field values for source
+    self.argparser.add_argument(
+      '--field-values-source',
+      help = 'Output field values for a specific field of a source data; this should be in the format of source&field&limit, for example "ramsey#SiteCityPS#100".',
+      default = None
+    )
+
     # Option to output field values
     self.argparser.add_argument(
       '--field-values-first',
-      help = 'Output field values for a specific field; min and max if not string. Without combing.',
+      help = 'Output field values for a specific field of the combined data; min and max if not string. Without combining.',
       default = None
     )
 
     # Option to output field values
     self.argparser.add_argument(
       '--field-values-last',
-      help = 'Output field values for a specific field; min and max if not string.  After combining.',
+      help = 'Output field values for a specific field of the combined data; min and max if not string. After combining.',
       default = None
     )
 
@@ -454,10 +714,17 @@ class MetroParcels():
       self.output_field_definitions(self.args.field_definition)
       return
 
-    # Output field defintion if so
+    # Output field values for source
+    if self.args.field_values_source not in [None, '', 0]:
+      source, field, limit = self.args.field_values_source.split('#')
+      self.output_field_source(source, field, int(limit))
+      return
+
+    # Output field values for combined
     if self.args.field_values_first not in [None, '', 0]:
       self.define_combined(False, False)
       self.output_field_values(self.args.field_values_first)
+      self.close()
       return
 
     # Figure out totals
@@ -468,6 +735,7 @@ class MetroParcels():
 
     # Combine sources.  For some reason if we do hennepin first, it hangs
     # on anoka
+    self.combine('ramsey')
     self.combine('anoka')
     self.combine('hennepin')
 
