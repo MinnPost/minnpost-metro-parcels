@@ -20,6 +20,6 @@
   <% } %>
 
   <% if (data.USE1_DESC || data.HOMESTEAD) { %>
-    This parcel is classified as <em><%= data.USE1_DESC.toLowerCase() %></em>, <em><%= (data.HOMESTEAD === 'Y') ? 'homestead' : 'non-homestead' %></em>.
+    This parcel is classified as <em><%= data.USE1_DESC.toLowerCase() %></em>, <em><%= (data.HOMESTEAD === 'Y') ? 'homestead' : 'non-homestead' %></em> by <%= (data.COUNTY_ID == '2') ? 'Anoka' : (data.COUNTY_ID == '27') ? 'Hennepin' : 'Ramsey' %> county.
   <% } %>
 </div>

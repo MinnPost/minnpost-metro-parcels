@@ -5,7 +5,7 @@
 
     <div class="component-label">Metro area residential parcels</div>
 
-    <div class="caption">The map below shows the estimated market value of residential parcels in Hennepin and Anoka counties.  This includes apartments, condominiums, and anything marked as a "homestead".  Hover over (or tap on a mobile device) to see some more information about the parcel.</div>
+    <div class="caption">The map below shows the estimated market value of residential parcels in Hennepin, Ramsey, and Anoka counties.  This includes apartments, condominiums, and anything marked as a "homestead".  Hover over (or tap on a mobile device) to see some more information about the parcel.</div>
 
     <div class="legend caption">
       <ul>
@@ -22,7 +22,7 @@
 
   <div class="footnote-container">
     <div class="footnote">
-      <p>Showing estimated total market value; not showing value per acre or square foot because there is not enough information about buildings which is included in the estimated total market value.</p>
+      <p>Showing estimated total market value; not showing value per acre or square foot because there is not enough information about buildings which is included in the estimated total market value.  Color groups based from percentiles.</p>
 
       <p>Some code, techniques, and data on <a href="https://github.com/minnpost/minnpost-metro-parcels" target="_blank">Github</a>.  Some map data © OpenStreetMap contributors; licensed under the <a href="http://www.openstreetmap.org/copyright" target="_blank">Open Data Commons Open Database License</a>.  Some map design © MapBox; licensed according to the <a href="http://mapbox.com/tos/" target="_blank">MapBox Terms of Service</a>.</p>
 

@@ -34,13 +34,13 @@ define('minnpost-metro-parcels', [
       this.$el.html(_.template(tApplication, {
         legend: {
           '#F1F1F1': '$0 or no data.',
-          '#543005': '$0 - $50k',
-          '#8c510a': '$50k - $75k',
-          '#bf812d': '$75k - $100k',
-          '#dfc27d': '$100k - $250k',
-          '#80cdc1': '$250k - $500k',
-          '#35978f': '$500k - $750k',
-          '#01665e': '$750k - $1M',
+          '#543005': '$0 - $100k',
+          '#8c510a': '$100k - $150k',
+          '#bf812d': '$150k - $175k',
+          '#dfc27d': '$175k - $200k',
+          '#80cdc1': '$200k - $250k',
+          '#35978f': '$250k - $350k',
+          '#01665e': '$350k - $1M',
           '#003c30': 'above $1M'
         }
       }));
@@ -48,11 +48,11 @@ define('minnpost-metro-parcels', [
       // Make tooltip template
       this.tooltipTemplate = _.template(tTooltip);
 
-      // Get tilejson data
+      // Get tilejson data manually, in case we want to do something awesome
+      // with it
       $.ajax({
-        url: this.options.mapbox_base.replace('{s}', 'a') + this.options.mapbox_map + '.json?callback=?',
+        url: this.options.mapbox_base.replace('{s}', 'a') + this.options.mapbox_composite + '.json?callback=?',
         dataType: 'jsonp',
-        jsonpCallback: 'mpCacheBuster',
         cache: true,
         success: function(data) {
           thisApp.tilejson = data;
@@ -67,12 +67,17 @@ define('minnpost-metro-parcels', [
       var thisApp = this;
 
       // Make map
-      this.map = L.mapbox.map('parcels-map', 'minnpost.map-vhjzpwel,' + this.options.mapbox_map + ',minnpost.map-dotjndlk', {
+      this.map = L.mapbox.map('parcels-map', this.tilejson, {
         scrollWheelZoom: false,
         trackResize: true,
         minZoom: 9,
         maxZoom: 16
       });
+
+      // Make sure that we are centered correctly
+      if (this.tilejson.center[0] === 0) {
+        this.map.setView([45.1426, -93.3347], 9);
+      }
 
       // Override the template function in Mapbox's grid control because
       // it doesn't expose more options and Mustache is stupid
@@ -151,7 +156,8 @@ define('minnpost-metro-parcels', [
       tilestream_base: '//ec2-54-82-59-19.compute-1.amazonaws.com:9003/v2/',
       tilestream_map: 'hennepin-parcels',
       mapbox_base: '//{s}.tiles.mapbox.com/v3/',
-      mapbox_map: 'minnpost.0ldkuik9',
+      mapbox_map: 'minnpost.wqqcl3di',
+      mapbox_composite: 'minnpost.map-vhjzpwel,minnpost.wqqcl3di,minnpost.map-dotjndlk',
       availablePaths: {
         local: {
           css: ['.tmp/css/main.css'],
