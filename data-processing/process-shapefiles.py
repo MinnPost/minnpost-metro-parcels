@@ -1,10 +1,14 @@
 """
 Process shapefiles.
+
+County ID numbers:
+http://www.sos.state.mn.us/index.aspx?page=1630
 """
 
 
 import logging, os, sys, argparse
 import progressbar
+import numpy
 from osgeo import ogr, osr
 
 
@@ -416,7 +420,7 @@ class MetroParcels():
     # an eqivalent in Ramsey
 
     # COUNTY_ID (String | 3 | 0)
-    new.SetField('COUNTY_ID', old.GetField('CountyID'))
+    new.SetField('COUNTY_ID', '62')
     # PIN (String | 17 | 0)
     new.SetField('PIN', old.GetField('ParcelID'))
     # BLDG_NUM (String | 10 | 0)
@@ -551,6 +555,9 @@ class MetroParcels():
     for i in range(0, field_count):
       new.SetField(self.combined_definition.GetFieldDefn(i).GetNameRef(), old.GetField(i))
 
+    # Manual settings
+    new.SetField('COUNTY_ID', '2')
+
     return new
 
 
@@ -667,9 +674,66 @@ class MetroParcels():
     # Stop progress bar
     progress.finish()
 
-    # Output results
-    for i in found:
-      self.out('%s (%s)\n' % (i, found[i]))
+    # Output results orderd by key
+    found_sorted = iter(sorted(found.items()))
+    for k, v in found_sorted:
+      self.out('%s (%s)\n' % (k, v))
+
+
+  def output_stats(self, stat):
+    """
+    Gets some basic stats for certain groups.
+    """
+    found = []
+    count = self.combined.GetFeatureCount()
+    widgets = ['- Gathering data stats on "%s": ' % (stat), progressbar.Percentage(), ' ', progressbar.ETA()]
+    progress = progressbar.ProgressBar(widgets = widgets, maxval = count).start()
+    completed = 0
+
+    # Under 1M
+    if stat == 'residential-1M':
+      for feature in self.combined:
+        amount = feature.GetField('EMV_TOTAL')
+        if amount <= 1000000 and amount > 0:
+          found.append(amount)
+
+        # Update progress
+        completed = completed + 1
+        progress.update(completed)
+
+      # Stop progress bar
+      progress.finish()
+
+      # Stats
+      found_array = numpy.array(found)
+      self.out('\n')
+      self.out('Min: %s\n' % (numpy.min(found_array)))
+      self.out('Max: %s\n' % (numpy.max(found_array)))
+      self.out('Median: %s\n' % (numpy.median(found_array)))
+
+      # Quantiles
+      intervals = 7
+      self.out('\n')
+      for x in range(0, intervals + 1):
+        step = (100 / float(intervals)) * float(x)
+        self.out('Quantile %s: %s\n' % (step, numpy.percentile(found_array, step)))
+
+      # Carto output
+      self.out('\n')
+      for x in range(0, intervals + 1):
+        step = (100 / float(intervals)) * float(x)
+        value = numpy.percentile(found_array, step) if x > 0 else 0
+        self.out('    [EMV_TOTAL > %s] { polygon-fill: @level%s; }\n' % (value, x + 1))
+
+      # Original
+      #[EMV_TOTAL > 0]        { polygon-fill: @level1; }
+      #[EMV_TOTAL > 50000]    { polygon-fill: @level2; }
+      #[EMV_TOTAL > 75000]    { polygon-fill: @level3; }
+      #[EMV_TOTAL > 100000]   { polygon-fill: @level4; }
+      #[EMV_TOTAL > 250000]   { polygon-fill: @level5; }
+      #[EMV_TOTAL > 500000]   { polygon-fill: @level6; }
+      #[EMV_TOTAL > 750000]   { polygon-fill: @level7; }
+      #[EMV_TOTAL > 1000000]  { polygon-fill: @level8; }
 
 
   def process(self):
@@ -706,6 +770,13 @@ class MetroParcels():
       default = None
     )
 
+    # Option to output field values
+    self.argparser.add_argument(
+      '--stats-residential-emv',
+      help = 'Output some basic stats for EMV values under 1M.',
+      action = 'store_true'
+    )
+
     # Parse options
     self.args = self.argparser.parse_args()
 
@@ -726,6 +797,14 @@ class MetroParcels():
       self.output_field_values(self.args.field_values_first)
       self.close()
       return
+
+    # Stats
+    if self.args.stats_residential_emv:
+      self.define_combined(False, False)
+      self.output_stats('residential-1M')
+      self.close()
+      return
+
 
     # Figure out totals
     self.get_counts()
