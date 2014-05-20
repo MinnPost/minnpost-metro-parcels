@@ -38,10 +38,10 @@ Map {
 
     [EMV_TOTAL > 0] { polygon-fill: @level1; }
     [EMV_TOTAL > 100000.0] { polygon-fill: @level2; }
-    [EMV_TOTAL > 140000.0] { polygon-fill: @level3; }
-    [EMV_TOTAL > 165000.0] { polygon-fill: @level4; }
+    [EMV_TOTAL > 150000.0] { polygon-fill: @level3; }
+    [EMV_TOTAL > 175000.0] { polygon-fill: @level4; }
     [EMV_TOTAL > 200000.0] { polygon-fill: @level5; }
-    [EMV_TOTAL > 245000.0] { polygon-fill: @level6; }
+    [EMV_TOTAL > 250000.0] { polygon-fill: @level6; }
     [EMV_TOTAL > 350000.0] { polygon-fill: @level7; }
     [EMV_TOTAL > 1000000.0] { polygon-fill: @level8; }
   }

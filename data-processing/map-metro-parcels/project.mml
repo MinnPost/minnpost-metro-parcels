@@ -1,14 +1,14 @@
 {
   "bounds": [
-    -93.8098,
-    44.7675,
-    -92.9968,
-    45.4383
+    -93.7782,
+    44.7821,
+    -92.9735,
+    45.4258
   ],
   "center": [
-    -93.3347,
-    45.1426,
-    9
+    -93.3553,
+    45.1145,
+    10
   ],
   "format": "png8",
   "interactivity": {
@@ -16,7 +16,15 @@
     "template_teaser": "{{{COUNTY_ID}}} <br>\n{{{PIN}}} <br>\n{{{EMV_TOTAL}}} <br>\n{{{EMV_LAND}}} <br>\n{{{EMV_BLDG}}} <br>\n{{{ACRES_POLY}}} <br>\n{{{ACRES_DEED}}} <br>\n{{{USE1_DESC}}} <br>\n{{{HOMESTEAD}}}",
     "template_full": "",
     "fields": [
-      "EMV_TOTAL"
+      "COUNTY_ID",
+      "PIN",
+      "EMV_TOTAL",
+      "EMV_LAND",
+      "EMV_BLDG",
+      "ACRES_POLY",
+      "ACRES_DEED",
+      "USE1_DESC",
+      "HOMESTEAD"
     ]
   },
   "minzoom": 9,
@@ -53,8 +61,8 @@
   "scale": 1,
   "metatile": 2,
   "name": "Twin Cities Metro Parcels",
-  "description": "",
+  "description": "Map of estimated market values for Twin Cities metro area counties.",
   "legend": "",
-  "attribution": "Hennepin County GIS, MetroGIS",
-  "version": "0.0.1"
+  "attribution": "Hennepin County GIS, Ramsey County GIS, MetroGIS",
+  "version": "0.0.2"
 }
