@@ -13,7 +13,6 @@ Several metro counties are passing Open GIS Data policies, and only some have st
 * Hennepin
     * [Hennepin County GIS data portal](http://www.hennepin.us/your-government/open-government/gis-open-data)
     * [PDF about parcels](http://www.hennepin.us/~/media/hennepinus/your-government/open-government/taxable-parcels.pdf)
-    * We use some [already converted files](http://data.dbspatial.com/hennepin/) provided by David Bitner as the files comes in ESRI Geodatabase files which very proprietary and hard to work with. The process for converting is described on [Github](https://github.com/dbSpatial/opentwincities/blob/master/fetch_hennepin.sh).
 * Anoka
     * Provided through the [MetroGIS DataFinder](http://www.datafinder.org/metadata/ParcelsCurrent.html)
 * Dakota
@@ -34,7 +33,7 @@ Download the data with the following commands.  These will be linked and process
 1. Ensure data directory is there: `mkdir -p data;`
 1. Hennepin: `cd data && wget http://gis-stage.co.hennepin.mn.us/publicgisdata/hennepin_county_tax_property_base.zip && unzip hennepin_county_tax_property_base.zip -d hennepin-gdb; cd -;`
 1. MetroGIS: `cd data && wget ftp://gisftp.metc.state.mn.us/ParcelsCurrent.zip && unzip ParcelsCurrent.zip -d metrogis-shp; cd -;`
-1. Ramsey: `cd data && wget ftp://ftp.co.ramsey.mn.us/gisdata/publicdata.zip && unzip publicdata.zip -d ramsey-shp-gdb; cd -;
+1. Ramsey: `cd data && wget ftp://ftp.co.ramsey.mn.us/gisdata/publicdata.zip && unzip publicdata.zip -d ramsey-shp-gdb; cd -;`
 
 ## Data processing
 
